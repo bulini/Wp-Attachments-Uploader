@@ -56,9 +56,15 @@ class MultipleUploader {
               <th scope="col"><?php _e( 'Display Mode', 'wp-attachments-uploader' ); ?><p><small>How to show attachments</small></p></th>
               <td>
                 <ul>
-                  <li><input type="radio" name="_uploader_display_mode" value="shortcode" /><?php _e( 'Only with Shortcode <code>[wp-attachments]</code>', 'wp-attachments-uploader' ); ?></li>     
-                  <li><input type="radio" name="_uploader_display_mode" value="before_content" /><?php _e( 'Before Content', 'wp-attachments-uploader' ); ?></li>     
-                  <li><input type="radio" name="_uploader_display_mode" value="after_content" /><?php _e( 'After Content', 'wp-attachments-uploader' ); ?></li>     
+                  <li>
+                    <input type="radio" name="_uploader_display_mode" value="shortcode" <?php echo (get_option('_uploader_display_mode')=='shortcode') ? 'checked' : ''; ?> /><?php _e( 'Only with Shortcode <code>[wp-attachments]</code>', 'wp-attachments-uploader' ); ?>
+                  </li>     
+                  <li>
+                    <input type="radio" name="_uploader_display_mode" value="before_content" <?php echo (get_option('_uploader_display_mode')=='before_content') ? 'checked' : ''; ?> /><?php _e( 'Before Content', 'wp-attachments-uploader' ); ?>
+                  </li>     
+                  <li>
+                    <input type="radio" name="_uploader_display_mode" value="after_content" <?php echo (get_option('_uploader_display_mode')=='after_content') ? 'checked' : ''; ?> /><?php _e( 'After Content', 'wp-attachments-uploader' ); ?>
+                  </li>     
                 </ul>
               </td>
             </tr>
@@ -69,11 +75,9 @@ class MultipleUploader {
                 <ul>
                 <?php
                 foreach ( get_post_types(array('public' => true), 'names' ) as $post_type ) { 
-                  $selected = in_array($post_type, $enabled_post_types) ? 'checked' : '';
-                  ?>
+                  $selected = in_array($post_type, $enabled_post_types) ? 'checked' : ''; ?>
                   <li><input type="checkbox" name="_uploader_post_types[]" value="<?php echo $post_type;?>" <?php echo $selected; ?> /><?php echo $post_type;?></li>
-                <?php }
-                ?>        
+                <?php } ?>        
                 </ul>
               </td>
             </tr>
@@ -82,8 +86,8 @@ class MultipleUploader {
               <th scope="col">Sidebar Widget</th>
               <td>
                 <ul>
-                  <li><input type="radio" name="_uploader_post_widget" value="1" /> Enabled</li>     
-                  <li><input type="radio" name="_uploader_post_widget" value="0" /> Disabled</li>     
+                  <li><input type="radio" name="_uploader_post_widget" value="1" <?php echo (get_option('_uploader_post_widget')==1) ? 'checked' : ''; ?> /> Enabled</li>     
+                  <li><input type="radio" name="_uploader_post_widget" value="0" <?php echo (get_option('_uploader_post_widget')==0) ? 'checked' : ''; ?> /> Disabled</li>     
                 </ul>
               </td>
             </tr>
@@ -108,7 +112,7 @@ class MultipleUploader {
       'uploader_metabox'
       ,__( 'Attached Documents', 'wp-attachments-uploader' )
       ,array( $this, 'multiple_uploader_meta_box_content' )
-      //dinamically
+      //dinamically get what post type needs the metabox
       ,$enabled_post_types
       ,'advanced'
       ,'high'
