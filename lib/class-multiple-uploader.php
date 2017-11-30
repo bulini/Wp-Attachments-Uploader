@@ -46,9 +46,20 @@ class MultipleUploader {
         <?php settings_fields( 'multiple-uploader-settings-group' ); ?>
         <?php do_settings_sections( 'multiple-uploader-settings-group' ); ?>
         <table class="form-table">
-             
+   
             <tr valign="top">
-              <th scope="row">Post Types</th>
+              <th scope="col">Show Attachments</th>
+              <td>
+                <ul>
+                  <li><input type="checkbox" name="_uploader_post_types[]" value="q" /> After Content</li>     
+                    <li><input type="checkbox" name="_uploader_post_types[]" value="q" /> After Content</li>     
+
+                </ul>
+              </td>
+            </tr>
+
+            <tr valign="top">
+              <th scope="col">Post Types</th>
               <td>
                 <ul>
                 <?php
@@ -225,7 +236,7 @@ class MultipleUploader {
       
       if( $docs ) {
 
-        $html = '<h4>'.__('Download Attachments','multiple_uploader').'</h4>';
+        $html = '<h4>'.__('Download Attachments','wp-attachments-uploader').'</h4>';
 
         $html.='<ul style="list-style-type: none;">';
         
