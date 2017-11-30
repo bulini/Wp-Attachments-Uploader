@@ -14,6 +14,7 @@ class MultipleUploader {
     add_action( 'save_post', array( $this, 'multiple_uploader_save' ) ); // Save meta box data
     add_action( 'admin_menu', array( $this, 'multiple_uploader_create_menu') );
     add_filter( 'the_content', array( $this, 'my_the_content_filter'),20 );
+    add_filter( 'admin_footer_text',  array( $this, 'custom_footer_admin') );
   }
 
   /**
@@ -31,16 +32,20 @@ class MultipleUploader {
    * @return [type] [description]
    */
   function register_multiple_uploader_settings() {
+ 
+    register_setting( 'multiple-uploader-settings-group', '_uploader_display_mode' );
     register_setting( 'multiple-uploader-settings-group', '_uploader_post_types' );
+    register_setting( 'multiple-uploader-settings-group', '_uploader_post_widget' );
+
   }
 
   public function multiple_uploader_settings_page() { 
     $post_types = get_post_types();
     $enabled_post_types = get_option('_uploader_post_types');
-    //print_r($enabled_post_types);
     ?>
+
     <div class="wrap">
-    <h1><img src="<?php echo UPLOADER_ABSOLUTE_URL; ?>assets/img/GS_logo.png" width="42" /></span> Multiple Attachments Uploader</h1>
+    <h1><span class="dashicons dashicons-admin-links"></span> Multiple Attachments Uploader</h1>
 
     <form method="post" action="options.php">
         <?php settings_fields( 'multiple-uploader-settings-group' ); ?>
@@ -48,22 +53,22 @@ class MultipleUploader {
         <table class="form-table">
    
             <tr valign="top">
-              <th scope="col">Show Attachments</th>
+              <th scope="col"><?php _e( 'Display Mode', 'wp-attachments-uploader' ); ?><p><small>How to show attachments</small></p></th>
               <td>
                 <ul>
-                  <li><input type="checkbox" name="_uploader_post_types[]" value="q" /> After Content</li>     
-                    <li><input type="checkbox" name="_uploader_post_types[]" value="q" /> After Content</li>     
-
+                  <li><input type="radio" name="_uploader_display_mode" value="shortcode" /><?php _e( 'Only with Shortcode <code>[wp-attachments]</code>', 'wp-attachments-uploader' ); ?></li>     
+                  <li><input type="radio" name="_uploader_display_mode" value="before_content" /><?php _e( 'Before Content', 'wp-attachments-uploader' ); ?></li>     
+                  <li><input type="radio" name="_uploader_display_mode" value="after_content" /><?php _e( 'After Content', 'wp-attachments-uploader' ); ?></li>     
                 </ul>
               </td>
             </tr>
 
             <tr valign="top">
-              <th scope="col">Post Types</th>
+              <th scope="col">Post Types<p><small>Choose which post types need the attachments box enabled</small></p></th>
               <td>
                 <ul>
                 <?php
-                foreach ( get_post_types( '', 'names' ) as $post_type ) { 
+                foreach ( get_post_types(array('public' => true), 'names' ) as $post_type ) { 
                   $selected = in_array($post_type, $enabled_post_types) ? 'checked' : '';
                   ?>
                   <li><input type="checkbox" name="_uploader_post_types[]" value="<?php echo $post_type;?>" <?php echo $selected; ?> /><?php echo $post_type;?></li>
@@ -72,6 +77,18 @@ class MultipleUploader {
                 </ul>
               </td>
             </tr>
+
+            <tr valign="top">
+              <th scope="col">Sidebar Widget</th>
+              <td>
+                <ul>
+                  <li><input type="radio" name="_uploader_post_widget" value="1" /> Enabled</li>     
+                  <li><input type="radio" name="_uploader_post_widget" value="0" /> Disabled</li>     
+                </ul>
+              </td>
+            </tr>
+
+
         </table>
         
         <?php submit_button(); ?>
@@ -113,10 +130,10 @@ class MultipleUploader {
   ?>
 
     <ul id="multiple_uploader">
-      <li class="cpi-upload" id="">
+      <li class="multiple-upload" id="">
         <input id="documenti_allegati" name="_uploaded_documents" type="hidden" value="<?php echo $docs; ?>" />
-        <p class="cpi-upload-header"><span class="dashicons dashicons-admin-links"></span> Caricamento Allegati</p>
-        <input type="button" class="button cpi-button multiple-uploader-button" value="<?php _e( 'Scegli Files', 'tuvali' )?>" />
+        <p class="multiple-upload-header"><span class="dashicons dashicons-admin-links"></span> Caricamento Allegati</p>
+        <input type="button" class="button multiple-button multiple-uploader-button" value="<?php _e( 'Scegli Files', 'tuvali' )?>" />
       </li>
     </ul>
 
@@ -254,6 +271,11 @@ class MultipleUploader {
 
     }
 
+    public function custom_footer_admin () {
+
+      echo 'Powered by <a href="http://www.wordpress.org" target="_blank">WordPress</a> | Attachments plugin by <a href="https://www.giuseppesurace.com" target="_blank"><img src="'.UPLOADER_ABSOLUTE_URL.'assets/img/GS_logo.png" width="24" /></a> </p>';
+    }
+ 
 
 
   }
