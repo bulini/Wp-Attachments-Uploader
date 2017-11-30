@@ -13,7 +13,7 @@ class MultipleUploader {
     add_action( 'add_meta_boxes', array( $this, 'uploader_metabox' ) ); // Add the meta box
     add_action( 'save_post', array( $this, 'multiple_uploader_save' ) ); // Save meta box data
     add_action( 'admin_menu', array( $this, 'multiple_uploader_create_menu') );
-    add_filter( 'the_content', array( $this, 'my_the_content_filter'),20 );
+    add_filter( 'the_content', array( $this, 'display_attachments_list'),20 );
     add_filter( 'admin_footer_text',  array( $this, 'custom_footer_admin') );
   }
 
@@ -230,25 +230,41 @@ class MultipleUploader {
     }
 
     /**
-     * Add a icon to the beginning of every post page.
+     * Add file list to the_content() based on
+     * _uploader_display_mode
      *
      * @uses is_single()
      */
-    public function my_the_content_filter( $content ) {
+    public function display_attachments_list( $content ) {
+
+        $display_mode = get_option('_uploader_display_mode');
 
         if ( is_single() ) {
-          // Add image to the beginning of each page
-          $aftercontent = $this->display_attachments();
-          $fullcontent = $content.$aftercontent;
+
+          if($display_mode=='after_content') {
+            // Add file list to the end of each content
+            $aftercontent = $this->display_attachments();
+            $fullcontent = $content.$aftercontent;
+
+          } elseif($display_mode=='before_content') {
+            // Add file list to the beginning of each content
+            $beforecontent = $this->display_attachments();
+            $fullcontent = $beforecontent.$content;
+
+          } else {
+            //no show only shortcode
+            $fullcontent = $content;
+
+          }
           
         }
 
-        // Returns the content.
+        // Returns the content with attachments.
         return $fullcontent;
     }
 
     /**
-     * [display an ul with files]
+     * [display an ul with attached files]
      * @return [type] [description]
      */
     public function display_attachments() {
@@ -272,11 +288,13 @@ class MultipleUploader {
       return $html;    
       } 
 
-
     }
 
+    /**
+     * Show some copyright on admi footer
+     * @return [type] [description]
+     */
     public function custom_footer_admin () {
-
       echo 'Powered by <a href="http://www.wordpress.org" target="_blank">WordPress</a> | Attachments plugin by <a href="https://www.giuseppesurace.com" target="_blank"><img src="'.UPLOADER_ABSOLUTE_URL.'assets/img/GS_logo.png" width="24" /></a> </p>';
     }
  
