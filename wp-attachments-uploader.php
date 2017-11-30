@@ -15,6 +15,6 @@
 
 define('UPLOADER_ABSOLUTE_URL', plugin_dir_url( __FILE__ ));
 
-load_plugin_textdomain('multiple-uploader', false, basename( dirname( __FILE__ ) ) . '/languages' );
+load_plugin_textdomain('wp-attachments-uploader', false, basename( dirname( __FILE__ ) ) . '/languages' );
 
-require_once('lib/multiple-uploader.php');
+require_once('lib/class-multiple-uploader.php');

@@ -1,6 +1,6 @@
 <?php
 /**
-* Classe x metabox allegati corso
+* MultiUploader for any post type
 * @author Giuseppe
 */
 class MultipleUploader {
@@ -12,20 +12,76 @@ class MultipleUploader {
   public function run() {
     add_action( 'add_meta_boxes', array( $this, 'uploader_metabox' ) ); // Add the meta box
     add_action( 'save_post', array( $this, 'multiple_uploader_save' ) ); // Save meta box data
+    add_action( 'admin_menu', array( $this, 'multiple_uploader_create_menu') );
+    add_filter( 'the_content', array( $this, 'my_the_content_filter'),20 );
   }
 
   /**
-  * metabox.
-  */
+   * [multiple_uploader_create_menu description]
+   * @return [type] [description]
+   */
+  public function multiple_uploader_create_menu() {
+    //create new top-level menu
+    add_menu_page('Multiple Uploader Settings', 'Attachments', 'administrator', __FILE__, array($this,'multiple_uploader_settings_page') , 'dashicons-admin-links' );
+    add_action( 'admin_init', array( $this, 'register_multiple_uploader_settings' ) );
+  }
 
+  /**
+   * [register_multiple_uploader_settings description]
+   * @return [type] [description]
+   */
+  function register_multiple_uploader_settings() {
+    register_setting( 'multiple-uploader-settings-group', '_uploader_post_types' );
+  }
+
+  public function multiple_uploader_settings_page() { 
+    $post_types = get_post_types();
+    $enabled_post_types = get_option('_uploader_post_types');
+    //print_r($enabled_post_types);
+    ?>
+    <div class="wrap">
+    <h1><img src="<?php echo UPLOADER_ABSOLUTE_URL; ?>assets/img/GS_logo.png" width="42" /></span> Multiple Attachments Uploader</h1>
+
+    <form method="post" action="options.php">
+        <?php settings_fields( 'multiple-uploader-settings-group' ); ?>
+        <?php do_settings_sections( 'multiple-uploader-settings-group' ); ?>
+        <table class="form-table">
+             
+            <tr valign="top">
+              <th scope="row">Post Types</th>
+              <td>
+                <ul>
+                <?php
+                foreach ( get_post_types( '', 'names' ) as $post_type ) { 
+                  $selected = in_array($post_type, $enabled_post_types) ? 'checked' : '';
+                  ?>
+                  <li><input type="checkbox" name="_uploader_post_types[]" value="<?php echo $post_type;?>" <?php echo $selected; ?> /><?php echo $post_type;?></li>
+                <?php }
+                ?>        
+                </ul>
+              </td>
+            </tr>
+        </table>
+        
+        <?php submit_button(); ?>
+
+    </form>
+    </div>
+  <?php 
+  } 
+
+  /**
+   * [uploader_metabox description]
+   * @return [type] [description]
+   */
   public function uploader_metabox() {
-
+    $enabled_post_types = get_option('_uploader_post_types');
     add_meta_box(
       'uploader_metabox'
-      ,__( 'Attached Documents', 'multiple_uploader' )
+      ,__( 'Attached Documents', 'wp-attachments-uploader' )
       ,array( $this, 'multiple_uploader_meta_box_content' )
       //dinamically
-      ,array('post', 'page')
+      ,$enabled_post_types
       ,'advanced'
       ,'high'
     );
@@ -138,7 +194,56 @@ class MultipleUploader {
       }
       $docs = $_POST['_uploaded_documents'];
       update_post_meta( $post_id, '_uploaded_documents', $docs );
+
     }
+
+    /**
+     * Add a icon to the beginning of every post page.
+     *
+     * @uses is_single()
+     */
+    public function my_the_content_filter( $content ) {
+
+        if ( is_single() ) {
+          // Add image to the beginning of each page
+          $aftercontent = $this->display_attachments();
+          $fullcontent = $content.$aftercontent;
+          
+        }
+
+        // Returns the content.
+        return $fullcontent;
+    }
+
+    /**
+     * [display an ul with files]
+     * @return [type] [description]
+     */
+    public function display_attachments() {
+      global $post;
+      $docs = get_post_meta( $post->ID, '_uploaded_documents', true );
+      
+      if( $docs ) {
+
+        $html = '<h4>'.__('Download Attachments','multiple_uploader').'</h4>';
+
+        $html.='<ul style="list-style-type: none;">';
+        
+        foreach(json_decode($docs) as $doc) {
+          $file_url = wp_get_attachment_url( $doc );
+          $filetype = wp_check_filetype( $file_url );
+          $html.='<li><a href="#"><img src="'.UPLOADER_ABSOLUTE_URL.'/assets/img/icons/filetypes/'.$filetype["ext"].'.png" />'.get_the_title( $doc  ).'</a></li>';
+         }
+      
+        $html.='</ul>';
+
+      return $html;    
+      } 
+
+
+    }
+
+
 
   }
 
