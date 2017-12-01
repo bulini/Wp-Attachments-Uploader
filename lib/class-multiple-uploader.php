@@ -11,6 +11,14 @@ class MultipleUploader {
 
   public function run() {
     add_action( 'admin_init', array( $this, 'load' ) );
+    wp_register_sidebar_widget(
+      'multiple_attachments',        // your unique widget id
+      'Attachments Widget',          // widget name
+      array($this,'attachments_widget'),  // callback function
+      array(                  // options
+        'description' => 'Description of what your widget does'
+      )
+    );
     add_action( 'add_meta_boxes', array( $this, 'uploader_metabox' ) ); // Add the meta box
     add_action( 'save_post', array( $this, 'multiple_uploader_save' ) ); // Save meta box data
     add_action( 'admin_menu', array( $this, 'multiple_uploader_create_menu') );
@@ -324,6 +332,19 @@ class MultipleUploader {
       }
 
     }
+
+    /**
+    *
+    */
+    function attachments_widget($args) {
+
+      if(is_single()) {
+        // print some HTML for the widget to display here
+        echo $this->display_attachments();
+      }
+
+    }
+
 
     /**
     * Show some copyright on admi footer
