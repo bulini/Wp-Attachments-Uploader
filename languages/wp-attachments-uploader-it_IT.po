@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Wp Attachments Uploader\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-30 14:57+0000\n"
-"PO-Revision-Date: 2017-11-30 14:58+0000\n"
+"POT-Creation-Date: 2017-12-01 00:07+0000\n"
+"PO-Revision-Date: 2017-12-01 00:09+0000\n"
 "Last-Translator: admin <pinobulini@gmail.com>\n"
 "Language-Team: Italian\n"
 "Language: it-IT\n"
@@ -13,17 +13,37 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco - https://localise.biz/"
 
+#: lib/class-multiple-uploader.php:99
+msgid "Display Mode"
+msgstr ""
+
+#: lib/class-multiple-uploader.php:103
+msgid "Only with Shortcode <code>[wp-attachments]</code>"
+msgstr ""
+
+#: lib/class-multiple-uploader.php:106
+msgid "Before Content"
+msgstr "Prima del contenuto"
+
+#: lib/class-multiple-uploader.php:109
+msgid "After Content"
+msgstr "Dopo il contenuto"
+
+#: lib/class-multiple-uploader.php:182
+msgid "Upload attachments"
+msgstr "Carica Allegati"
+
+#: lib/class-multiple-uploader.php:183
+msgid "Select files"
+msgstr "Scegli files"
+
+#: lib/class-multiple-uploader.php:319
+msgid "Download Attachments"
+msgstr "Scarica allegati"
+
 #. Name of the plugin
 msgid "Wp Attachments Uploader"
 msgstr ""
-
-#. Description of the plugin
-msgid ""
-"Useful metabox to upload each kind of attachments to your post and pages and "
-"custom post types."
-msgstr ""
-"Genera una metabox per il caricamento di allegati su Articoli Pagine e "
-"Custom post type."
 
 #. URI of the plugin
 #. Author URI of the plugin
@@ -34,6 +54,14 @@ msgstr ""
 msgid "bulini"
 msgstr ""
 
-#: lib/class-multiple-uploader.php:81
+#: lib/class-multiple-uploader.php:156
 msgid "Attached Documents"
 msgstr "Documenti allegati"
+
+#. Description of the plugin
+msgid ""
+"Useful metabox to upload each kind of attachments to your post and pages and "
+"custom post types."
+msgstr ""
+"Genera una metabox per il caricamento di allegati su Articoli Pagine e "
+"Custom post type."
